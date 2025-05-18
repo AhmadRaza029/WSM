@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Score Calculator</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #71b7e6, #9b59b6);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .container {
+    background: white;
+    padding: 2rem 3rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    max-width: 400px;
+    width: 90%;
+  }
+  h1 {
+    text-align: center;
+    color: #4a148c;
+    margin-bottom: 1.5rem;
+  }
+  label {
+    font-weight: bold;
+    color: #333;
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+  input[type="number"] {
+    width: 100%;
+    padding: 0.5rem 0.7rem;
+    margin-bottom: 1.25rem;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+  input[type="number"]:focus {
+    outline: none;
+    border-color: #7e57c2;
+    box-shadow: 0 0 6px #7e57c2aa;
+  }
+  button {
+    background-color: #7e57c2;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    width: 100%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background-color: #5e35b1;
+  }
+  .results {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background-color: #f0e7ff;
+    border-radius: 8px;
+    color: #320a75;
+    font-weight: 600;
+  }
+  .warning {
+    color: #d32f2f;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Score Calculator</h1>
+  <label for="income">Student Income (₹):</label>
+  <input type="number" id="income" min="50000" max="800000" step="1000" placeholder="₹50,000 - ₹8,00,000" />
+  <label for="distance">Student Distance (KM):</label>
+  <input type="number" id="distance" min="150" max="3000" step="10" placeholder="150 - 3000 KM" />
+  <button id="calculateBtn">Calculate Scores</button>
+  <div id="warnings"></div>
+  <div class="results" id="results" style="display:none;">
+    <p id="incomeScore"></p>
+    <p id="distanceScore"></p>
+    <p id="finalScore"></p>
+  </div>
+</div>
+<script>
+  const maxIncome = 800000;
+  const minIncome = 50000;
+  const maxDistance = 3000;
+  const minDistance = 150;
+  const w1 = 0.6;
+  const w2 = 0.4;
+
+  const incomeInput = document.getElementById('income');
+  const distanceInput = document.getElementById('distance');
+  const calculateBtn = document.getElementById('calculateBtn');
+  const warningsDiv = document.getElementById('warnings');
+  const resultsDiv = document.getElementById('results');
+  const incomeScoreP = document.getElementById('incomeScore');
+  const distanceScoreP = document.getElementById('distanceScore');
+  const finalScoreP = document.getElementById('finalScore');
+
+  calculateBtn.addEventListener('click', () => {
+    warningsDiv.textContent = '';
+    resultsDiv.style.display = 'none';
+
+    const income = Number(incomeInput.value);
+    const distance = Number(distanceInput.value);
+
+    let warningMessages = [];
+    if (isNaN(income) || income < minIncome || income > maxIncome) {
+      warningMessages.push('Income should be between ₹50,000 and ₹8,00,000.');
+    }
+    if (isNaN(distance) || distance < minDistance || distance > maxDistance) {
+      warningMessages.push('Distance should be between 150 KM and 3000 KM.');
+    }
+    if (warningMessages.length > 0) {
+      warningsDiv.innerHTML = warningMessages.map(msg => `<div class="warning">${msg}</div>`).join('');
+      return;
+    }
+
+    const incomeScore = w1 * (maxIncome - income) / (maxIncome - minIncome);
+    const distanceScore = w2 * (maxDistance - distance) / (maxDistance - minDistance);
+    const finalScore = incomeScore + distanceScore;
+
+    incomeScoreP.textContent = `Income Score = ${incomeScore.toFixed(4)}`;
+    distanceScoreP.textContent = `Distance Score = ${distanceScore.toFixed(4)}`;
+    finalScoreP.textContent = `Final Score = ${finalScore.toFixed(4)}`;
+
+    resultsDiv.style.display = 'block';
+  });
+</script>
+</body>
+</html>
+
